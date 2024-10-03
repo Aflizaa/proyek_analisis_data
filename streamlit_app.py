@@ -60,7 +60,7 @@ def categorize_time(hour):
         return 'Siang'
     elif 14 <= hour < 18:
         return 'Sore'
-    else:
+    elif 18 <= hour < 24:
         return 'Malam'
 
 # Menambahkan kolom time_category
@@ -94,14 +94,7 @@ user_pattern = day_df[['weekday', 'casual', 'registered']].groupby('weekday').me
 
 plt.figure(figsize=(10, 6))
 sns.lineplot(data=user_pattern, x='weekday', y='casual', marker='o', label='Casual')
-sns.lineplot(data=user_pattern, x='weekday', y='registered', marker='o', label='Registered')
-plt.title('Rata-rata Penyewaan Sepeda Casual vs Registered per Hari')
-plt.xlabel('Hari dalam Seminggu')
-plt.ylabel('Rata-rata Jumlah Penyewaan')
-plt.xticks(ticks=[0, 1, 2, 3, 4, 5, 6], labels=['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'])
-plt.legend()
-st.pyplot(plt)
-
+sns.lineplot(data=user_pattern, x='weekday', y
 # Kesimpulan
 st.subheader("Kesimpulan:")
 st.write("""
