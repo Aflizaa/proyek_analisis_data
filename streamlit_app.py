@@ -94,7 +94,14 @@ user_pattern = day_df[['weekday', 'casual', 'registered']].groupby('weekday').me
 
 plt.figure(figsize=(10, 6))
 sns.lineplot(data=user_pattern, x='weekday', y='casual', marker='o', label='Casual')
-sns.lineplot(data=user_pattern, x='weekday', y
+sns.lineplot(data=user_pattern, x='weekday', y='registered', marker='o', label='Registered')
+plt.title('Rata-rata Penyewaan Sepeda Casual vs Registered per Hari')
+plt.xlabel('Hari dalam Seminggu')
+plt.ylabel('Rata-rata Jumlah Penyewaan')
+plt.xticks(ticks=[0, 1, 2, 3, 4, 5, 6], labels=['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'])
+plt.legend()
+st.pyplot(plt)
+
 # Kesimpulan
 st.subheader("Kesimpulan:")
 st.write("""
@@ -102,3 +109,4 @@ st.write("""
 2. Tren penyewaan tertinggi terjadi di sore hari.
 3. Pengguna casual lebih banyak menyewa pada hari kerja, sedangkan pengguna registered cenderung lebih banyak di akhir pekan.
 """)
+.py
