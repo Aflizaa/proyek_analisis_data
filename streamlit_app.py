@@ -144,22 +144,38 @@ elif analysis_type == "Tren Waktu":
     with col1:
         # Time category analysis
         st.subheader("Rata-Rata Penyewaan Berdasarkan Waktu")
-        time_trend = hour_df.groupby('time_category')['cnt'].mean().round(0)
+        time_trend = hour_df.groupby('time_category').agg({
+            'casual': 'mean',
+            'registered': 'mean',
+            'cnt': 'mean'
+        }).round(0)
         
         fig3, ax3 = plt.subplots(figsize=(10, 6))
-        time_trend.plot(kind='bar', ax=ax3, color="#DE0A26")
+        x = range(len(time_trend.index))
+        width = 0.25
         
-        max_y = time_trend.max()
-        plt.ylim(0, max_y * 1.1)
+        # Membuat bars
+        casual_bars = ax3.bar([i - width for i in x], time_trend['casual'], width, label='Casual', color='#C30010')
+        registered_bars = ax3.bar(x, time_trend['registered'], width, label='Registered', color='#F01E2C')
+        total_bars = ax3.bar([i + width for i in x], time_trend['cnt'], width, label='Total', color='#F69697')
         
-        plt.title("Rata-Rata Penyewaan Berdasarkan Waktu")
-        plt.xlabel("Waktu")
-        plt.ylabel("Rata-Rata Penyewaan")
-        st.pyplot(fig3)
-        plt.close()
+        # Menambahkan nilai di atas setiap bar
+        def add_value_labels(bars):
+            for bar in bars:
+                height = bar.get_height()
+                ax3.text(bar.get_x() + bar.get_width()/2., height,
+                        f'{int(height)}',
+                        ha='center', va='bottom')
         
-        for i, v in enumerate(time_trend):
-            ax3.text(i, v + (max_y * 0.02), str(int(v)), ha='center')
+        add_value_labels(casual_bars)
+        add_value_labels(registered_bars)
+        add_value_labels(total_bars)
+        
+        plt.title("Rata-rata Penyewaan Berdasarkan Waktu Hari")
+        plt.xlabel("Waktu Hari")
+        plt.ylabel("Rata-rata Penyewaan per Jam")
+        plt.xticks(x, time_trend.index)
+        plt.legend()
         
         st.pyplot(fig3)
         plt.close()
@@ -167,18 +183,23 @@ elif analysis_type == "Tren Waktu":
     with col2:
         # Hourly trend
         st.subheader("Pola Penyewaan Per Jam")
-        hourly_trend = hour_df.groupby('hr')['cnt'].mean()
+        hourly_trend = hour_df.groupby('hr').agg({
+            'casual': 'mean',
+            'registered': 'mean',
+            'cnt': 'mean'
+        }).round(0)
         
         fig4, ax4 = plt.subplots(figsize=(10, 6))
-        hourly_trend.plot(ax=ax4, color="#DE0A26")
-        
-        max_y = hourly_trend.max()
-        plt.ylim(0, max_y * 1.1)
+        ax4.plot(hourly_trend.index, hourly_trend['casual'], label='Casual', color='#C30010')
+        ax4.plot(hourly_trend.index, hourly_trend['registered'], label='Registered', color='#F01E2C')
+        ax4.plot(hourly_trend.index, hourly_trend['cnt'], label='Total', color='#F69697')
         
         plt.title("Rata-rata Penyewaan Per Jam")
         plt.xlabel("Jam")
         plt.ylabel("Rata-rata Penyewaan")
         plt.xticks(range(0, 24))
+        plt.legend()
+        
         st.pyplot(fig4)
         plt.close()
 
