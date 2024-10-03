@@ -46,13 +46,26 @@ st.pyplot(plt)
 # Analisis Penyewaan Berdasarkan Waktu (Pagi, Siang, Sore, Malam)
 hour_df['hour'] = hour_df['dteday'].dt.hour  # Menggunakan .hour, bukan .hr
 
-# Menampilkan nilai jam yang tersedia
+# Menampilkan beberapa baris awal dari dataframe
+st.subheader("Data Awal")
+st.write(hour_df.head(20))  # Tampilkan 20 baris pertama
+
+# Menampilkan nilai unik dari kolom hour
 st.subheader("Nilai Jam yang Tersedia")
 st.write(hour_df['hour'].unique())  # Tampilkan nilai unik dari kolom 'hour'
 
 # Menampilkan statistik dari kolom cnt
 st.subheader("Statistik Penyewaan (cnt)")
 st.write(hour_df['cnt'].describe())  # Tampilkan statistik dari kolom 'cnt'
+
+# Menggambarkan jumlah penyewaan per jam untuk melihat distribusi
+plt.figure(figsize=(10, 6))
+sns.barplot(x='hour', y='cnt', data=hour_df, palette='viridis')
+plt.title('Jumlah Penyewaan Sepeda per Jam')
+plt.xlabel('Jam')
+plt.ylabel('Jumlah Penyewaan')
+plt.xticks(rotation=45)
+st.pyplot(plt)
 
 # Mengkategorikan waktu menggunakan fungsi
 def categorize_time(hour):
@@ -80,7 +93,6 @@ st.write(time_trend)  # Tampilkan total penyewaan per kategori waktu
 # Menampilkan hasil dalam tabel
 st.subheader("Tabel Jumlah Penyewaan per Kategori Waktu")
 st.write(hour_df[['time_category', 'cnt']].head(30))  # Tampilkan beberapa baris untuk memeriksa kategorinya
-
 # Analisis Pertanyaan 3: Pola pengguna Casual vs Registered
 st.subheader("Pola Penyewaan Casual vs Registered")
 user_pattern = day_df[['weekday', 'casual', 'registered']].groupby('weekday').mean().reset_index()
