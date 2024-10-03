@@ -1,5 +1,8 @@
 import streamlit as st
+import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Judul aplikasi
 st.title("Analisis Data Bike Sharing")
@@ -25,4 +28,24 @@ if uploaded_file is not None:
     st.write(f"Rata-rata Registered Users: {avg_registered}")
 
     # Kamu bisa tambahkan visualisasi menggunakan st.line_chart, st.bar_chart, dsb.
+#Mengelompokkan jam menjadi kategori : pagi, siang, sore, dan malem
+def categorize_time(hour):
+    if 4 <= hour <= 10:
+        return 'Pagi'
+    elif 10 < hour <= 14:
+        return 'Siang'
+    elif 14 < hour <= 18:
+        return 'Sore'
+    else:
+        return 'Malam'
+
+hour_df['time_category'] = hour_df['hr'].apply(categorize_time)
+hour_df['time_category'].head(30)
+
+hour_df['time_category'] = pd.Categorical(hour_df['time_category'], categories=['Pagi', 'Siang', 'Sore', 'Malam'], ordered=True)
+time_trend = hour_df.groupby('time_category')['cnt'].sum().sort_index()
+
+st.bar_chart("time_trend")
+
+
 
