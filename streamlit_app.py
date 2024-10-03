@@ -108,9 +108,9 @@ if analysis_type == "Dampak Cuaca":
         x = range(len(weather_rentals['kondisi_cuaca']))
         width = 0.25
         
-        plt.bar([i - width for i in x], weather_rentals['casual'], width, label='Casual', color='#FFA07A')
-        plt.bar(x, weather_rentals['registered'], width, label='Registered', color='#FF8C00')
-        plt.bar([i + width for i in x], weather_rentals['cnt'], width, label='Total', color='#FF4500')
+        plt.bar([i - width for i in x], weather_rentals['casual'], width, label='Casual', color='#C30010')
+        plt.bar(x, weather_rentals['registered'], width, label='Registered', color='#F01E2C')
+        plt.bar([i + width for i in x], weather_rentals['cnt'], width, label='Total', color='#F6967')
         
         plt.xlabel('Kondisi Cuaca')
         plt.ylabel('Rata-rata Jumlah Penyewaan')
@@ -143,14 +143,24 @@ elif analysis_type == "Tren Waktu":
     
     with col1:
         # Time category analysis
-        st.subheader("Penyewaan Berdasarkan Waktu Hari")
-        time_trend = hour_df.groupby('time_category')['cnt'].sum()
+        st.subheader("Rata-Rata Penyewaan Berdasarkan Waktu")
+        time_trend = hour_df.groupby('time_category')['cnt'].mean().round(0)
         
         fig3, ax3 = plt.subplots(figsize=(10, 6))
-        time_trend.plot(kind='bar', ax=ax3)
-        plt.title("Total Penyewaan Berdasarkan Waktu Hari")
-        plt.xlabel("Waktu Hari")
-        plt.ylabel("Total Penyewaan")
+        time_trend.plot(kind='bar', ax=ax3, color="#DE0A26")
+        
+        max_y = time_trend.max()
+        plt.ylim(0, max_y * 1.1)
+        
+        plt.title("Rata-Rata Penyewaan Berdasarkan Waktu")
+        plt.xlabel("Waktu")
+        plt.ylabel("Rata-Rata Penyewaan")
+        st.pyplot(fig3)
+        plt.close()
+        
+        for i, v in enumerate(time_trend):
+            ax3.text(i, v + (max_y * 0.02), str(int(v)), ha='center')
+        
         st.pyplot(fig3)
         plt.close()
     
@@ -161,9 +171,14 @@ elif analysis_type == "Tren Waktu":
         
         fig4, ax4 = plt.subplots(figsize=(10, 6))
         hourly_trend.plot(ax=ax4)
+        
+        max_y = hourly_trend.max()
+        plt.ylim(0, max_y * 1.1)
+        
         plt.title("Rata-rata Penyewaan Per Jam")
         plt.xlabel("Jam")
         plt.ylabel("Rata-rata Penyewaan")
+        plt.xticks(range(0, 24))
         st.pyplot(fig4)
         plt.close()
 
