@@ -46,17 +46,23 @@ st.pyplot(plt)
 # Analisis Penyewaan Berdasarkan Waktu (Pagi, Siang, Sore, Malam)
 hour_df['hour'] = hour_df['dteday'].dt.hour  # Menggunakan .hour, bukan .hr
 
-# Cek nilai unik dalam kolom hour
-st.subheader("Nilai Unik dalam Kolom Jam")
-st.write(hour_df['hour'].unique())
+# Mengkategorikan waktu menggunakan apply
+def categorize_time(hour):
+    if 0 <= hour < 4:
+        return 'Malam'
+    elif 4 <= hour < 10:
+        return 'Pagi'
+    elif 10 <= hour < 14:
+        return 'Siang'
+    elif 14 <= hour < 18:
+        return 'Sore'
+    else:
+        return 'Malam'
 
 # Menambahkan kolom time_category
-# Menghindari kesalahan dengan memeriksa rentang nilai
-bins = [0, 4, 10, 14, 18, 24]
-labels = ['Malam', 'Pagi', 'Siang', 'Sore', 'Malam']
-hour_df['time_category'] = pd.cut(hour_df['hour'], bins=bins, labels=labels, right=False)
+hour_df['time_category'] = hour_df['hour'].apply(categorize_time)
 
-# Memastikan tidak ada nilai NaN di time_category
+# Menghitung jumlah penyewaan berdasarkan kategori waktu
 st.subheader("Jumlah Penyewaan Berdasarkan Waktu")
 time_trend = hour_df.groupby('time_category')['cnt'].sum().reset_index()
 st.write(time_trend)
