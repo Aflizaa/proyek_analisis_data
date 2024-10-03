@@ -84,6 +84,10 @@ plt.xlabel('Waktu')
 plt.ylabel('Jumlah Penyewaan')
 st.pyplot(plt)
 
+ Cek apakah setiap kategori waktu memiliki penyewaan
+st.subheader("Jumlah Penyewaan untuk Setiap Kategori Waktu")
+st.write(hour_df['time_category'].value_counts())  # Tampilkan jumlah penyewaan per kategori waktu
+
 # Analisis Pertanyaan 3: Pola pengguna Casual vs Registered
 st.subheader("Pola Penyewaan Casual vs Registered")
 user_pattern = day_df[['weekday', 'casual', 'registered']].groupby('weekday').mean().reset_index()
