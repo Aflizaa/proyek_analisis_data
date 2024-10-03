@@ -84,7 +84,7 @@ plt.xlabel('Waktu')
 plt.ylabel('Jumlah Penyewaan')
 st.pyplot(plt)
 
- Cek apakah setiap kategori waktu memiliki penyewaan
+#Cek apakah setiap kategori waktu memiliki penyewaan
 st.subheader("Jumlah Penyewaan untuk Setiap Kategori Waktu")
 st.write(hour_df['time_category'].value_counts())  # Tampilkan jumlah penyewaan per kategori waktu
 
