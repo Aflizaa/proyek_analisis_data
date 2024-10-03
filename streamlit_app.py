@@ -108,10 +108,10 @@ if analysis_type == "Dampak Cuaca":
         x = range(len(weather_rentals['kondisi_cuaca']))
         width = 0.25
         
-        plt.bar([i - width for i in x], weather_rentals['casual'], width, label='Casual', color='#C30010')
-        plt.bar(x, weather_rentals['registered'], width, label='Registered', color='#F01E2C')
-        plt.bar([i + width for i in x], weather_rentals['cnt'], width, label='Total', color='#F69697')
-        
+        plt.bar([i - width for i in x], weather_rentals['casual'], width, label='Casual', color='#6C030D')
+        plt.bar(x, weather_rentals['registered'], width, label='Registered', color='#9D0106')
+        plt.bar([i + width for i in x], weather_rentals['cnt'], width, label='Total', color='#D00000')
+    
         plt.xlabel('Kondisi Cuaca')
         plt.ylabel('Rata-rata Jumlah Penyewaan')
         plt.title('Rata-rata Penyewaan Berdasarkan Kondisi Cuaca')
@@ -155,9 +155,9 @@ elif analysis_type == "Tren Waktu":
         width = 0.25
         
         # Membuat bars
-        casual_bars = ax3.bar([i - width for i in x], time_trend['casual'], width, label='Casual', color='#C30010')
-        registered_bars = ax3.bar(x, time_trend['registered'], width, label='Registered', color='#F01E2C')
-        total_bars = ax3.bar([i + width for i in x], time_trend['cnt'], width, label='Total', color='#F69697')
+        casual_bars = ax3.bar([i - width for i in x], time_trend['casual'], width, label='Casual', color='#6C030D')
+        registered_bars = ax3.bar(x, time_trend['registered'], width, label='Registered', color='#9D0106')
+        total_bars = ax3.bar([i + width for i in x], time_trend['cnt'], width, label='Total', color='#D00000')
         
         # Menambahkan nilai di atas setiap bar
         def add_value_labels(bars):
@@ -190,9 +190,9 @@ elif analysis_type == "Tren Waktu":
         }).round(0)
         
         fig4, ax4 = plt.subplots(figsize=(10, 6))
-        ax4.plot(hourly_trend.index, hourly_trend['casual'], label='Casual', color='#C30010')
-        ax4.plot(hourly_trend.index, hourly_trend['registered'], label='Registered', color='#F01E2C')
-        ax4.plot(hourly_trend.index, hourly_trend['cnt'], label='Total', color='#F69697')
+        ax4.plot(hourly_trend.index, hourly_trend['casual'], label='Casual', color='#6C030D')
+        ax4.plot(hourly_trend.index, hourly_trend['registered'], label='Registered', color='#9D0106')
+        ax4.plot(hourly_trend.index, hourly_trend['cnt'], label='Total', color='#D00000')
         
         plt.title("Rata-rata Penyewaan Per Jam")
         plt.xlabel("Jam")
@@ -209,8 +209,8 @@ elif analysis_type == "Pola Pengguna":
     user_pattern = day_df[['weekday', 'casual', 'registered']].groupby('weekday').mean().reset_index()
     
     fig5, ax5 = plt.subplots(figsize=(12, 6))
-    sns.lineplot(data=user_pattern, x='weekday', y='casual', marker='o', label='Casual')
-    sns.lineplot(data=user_pattern, x='weekday', y='registered', marker='o', label='Registered')
+    sns.lineplot(data=user_pattern, x='weekday', y='casual', marker='o', label='Casual', color = "D00000")
+    sns.lineplot(data=user_pattern, x='weekday', y='registered', marker='o', label='Registered', color ="E85D04" )
     plt.title('Rata-rata Penyewaan: Pengguna Casual vs Registered')
     plt.xlabel('Hari dalam Seminggu')
     plt.ylabel('Rata-rata Penyewaan')
