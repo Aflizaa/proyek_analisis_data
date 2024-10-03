@@ -108,8 +108,8 @@ if analysis_type == "Dampak Cuaca":
         x = range(len(weather_rentals['kondisi_cuaca']))
         width = 0.25
         
-        plt.bar([i - width for i in x], weather_rentals['casual'], width, label='Casual', color=''#FFA07A'')
-        plt.bar(x, weather_rentals['registered'], width, label='Registered', color='#FF8C00'')
+        plt.bar([i - width for i in x], weather_rentals['casual'], width, label='Casual', color='#FFA07A')
+        plt.bar(x, weather_rentals['registered'], width, label='Registered', color='#FF8C00')
         plt.bar([i + width for i in x], weather_rentals['cnt'], width, label='Total', color='#FF4500')
         
         plt.xlabel('Kondisi Cuaca')
