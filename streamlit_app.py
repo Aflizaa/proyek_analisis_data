@@ -44,10 +44,10 @@ plt.ylabel('Jumlah Penyewaan')
 st.pyplot(plt)
 
 # Analisis Penyewaan Berdasarkan Waktu (Pagi, Siang, Sore, Malam)
-hour_df['hr'] = pd.to_datetime(hour_df['dteday']).dt.hr
+hour_df['hour'] = hour_df['dteday'].dt.hour  # Menggunakan .hour, bukan .hr
 
 # Menambahkan kolom time_category
-hour_df['time_category'] = pd.cut(hour_df['hr'], bins=[0, 4, 10, 14, 18, 24],
+hour_df['time_category'] = pd.cut(hour_df['hour'], bins=[0, 4, 10, 14, 18, 24],
                                   labels=['Malam', 'Pagi', 'Siang', 'Sore', 'Malam'], right=False)
 
 time_trend = hour_df.groupby('time_category')['cnt'].sum().reset_index()
