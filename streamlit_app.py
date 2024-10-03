@@ -1,112 +1,131 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+import seaborn as sns
+plt.style.use('seaborn')
 
-# Judul aplikasi
-st.title("Dashboard Analisis Data Penyewaan Sepeda")
+# Set page config
+st.set_page_config(
+    page_title="Dashboard Analisis Penyewaan Sepeda",
+    page_icon="🚲",
+    layout="wide"
+)
 
-# Membaca dataset dari file lokal
-day_df = pd.read_csv('day.csv')  # Pastikan file ini ada di repositori GitHub kamu
-hour_df = pd.read_csv('hour.csv')  # Pastikan file ini ada di repositori GitHub kamu
+# Function to load data
+@st.cache_data
+def load_data():
+    day_df = pd.read_csv("day.csv")
+    hour_df = pd.read_csv("hour.csv")
+    
+    # Convert dteday to datetime
+    day_df['dteday'] = pd.to_datetime(day_df['dteday'])
+    hour_df['dteday'] = pd.to_datetime(hour_df['dteday'])
+    
+    # Add time category to hour_df
+    def categorize_time(hour):
+        if 4 <= hour <= 10:
+            return 'Pagi'
+        elif 10 < hour <= 14:
+            return 'Siang'
+        elif 14 < hour <= 18:
+            return 'Sore'
+        else:
+            return 'Malam'
+    
+    hour_df['time_category'] = hour_df['hr'].apply(categorize_time)
+    
+    return day_df, hour_df
 
-# Tampilkan contoh data
-st.subheader("Contoh Data Harian")
-st.write(day_df.head())
+# Load data
+day_df, hour_df = load_data()
 
-st.subheader("Contoh Data Jam")
-st.write(hour_df.head(30))
+# Header
+st.title("🚲 Dashboard Analisis Penyewaan Sepeda")
+st.write("oleh Afliza Husniyar Anggraini")
 
-# Data Wrangling - Mengubah tipe data
-day_df['dteday'] = pd.to_datetime(day_df['dteday'])
-hour_df['dteday'] = pd.to_datetime(hour_df['dteday'])
+# Sidebar
+st.sidebar.header("Opsi Dashboard")
+analysis_type = st.sidebar.selectbox(
+    "Pilih Analisis",
+    ["Dampak Cuaca", "Tren Waktu", "Pola Pengguna"]
+)
 
-# Descriptive Statistics
-st.subheader("Statistik Deskriptif Data Harian")
-st.write(day_df.describe())
+# Main content based on selection
+if analysis_type == "Dampak Cuaca":
+    st.header("Analisis Dampak Cuaca")
+    
+    col1, col2 = st.columns([2, 1])
+    
+    with col1:
+        # Correlation heatmap
+        st.subheader("Korelasi antara Faktor Cuaca dan Penyewaan")
+        fig, ax = plt.subplots(figsize=(10, 6))
+        correlation = day_df[["temp", "atemp", "hum", "windspeed", "weathersit", "cnt"]].corr()
+        sns.heatmap(correlation, annot=True, cmap="coolwarm", fmt=".2f", square=True)
+        plt.title("Korelasi antara Faktor Cuaca dan Jumlah Penyewaan")
+        ax.set_xticklabels(['Suhu', 'Suhu Terasa', 'Kelembaban', 'Kec. Angin', 'Cuaca', 'Jumlah'], rotation=45)
+        ax.set_yticklabels(['Suhu', 'Suhu Terasa', 'Kelembaban', 'Kec. Angin', 'Cuaca', 'Jumlah'], rotation=45)
+        st.pyplot(fig)
+    
+    with col2:
+        st.subheader("Pengaruh Suhu Terhadap Penyewaan")
+        day_df['temp_bins'] = pd.cut(day_df['temp'], 
+                                    bins=[0, 0.2, 0.4, 0.6, 0.8, 1], 
+                                    labels=['Sangat Rendah', 'Rendah', 'Sedang', 'Tinggi', 'Sangat Tinggi'])
+        weather_effect = day_df.groupby('temp_bins')['cnt'].mean()
+        
+        fig2, ax2 = plt.subplots(figsize=(10, 6))
+        weather_effect.plot(kind='bar', ax=ax2)
+        plt.title("Rata-rata Penyewaan Berdasarkan Kategori Suhu")
+        plt.xlabel("Kategori Suhu")
+        plt.ylabel("Rata-rata Jumlah Penyewaan")
+        st.pyplot(fig2)
 
-st.subheader("Statistik Deskriptif Data Jam")
-st.write(hour_df.describe())
+elif analysis_type == "Tren Waktu":
+    st.header("Pola Penyewaan Berdasarkan Waktu")
+    
+    # Time category analysis
+    st.subheader("Penyewaan Berdasarkan Waktu Hari")
+    time_trend = hour_df.groupby('time_category')['cnt'].sum()
+    
+    fig3, ax3 = plt.subplots(figsize=(10, 6))
+    time_trend.plot(kind='bar', ax=ax3)
+    plt.title("Total Penyewaan Berdasarkan Waktu Hari")
+    plt.xlabel("Waktu Hari")
+    plt.ylabel("Total Penyewaan")
+    st.pyplot(fig3)
+    
+    # Hourly trend
+    st.subheader("Pola Penyewaan Per Jam")
+    hourly_trend = hour_df.groupby('hr')['cnt'].mean()
+    
+    fig4, ax4 = plt.subplots(figsize=(10, 6))
+    hourly_trend.plot(ax=ax4)
+    plt.title("Rata-rata Penyewaan Per Jam")
+    plt.xlabel("Jam")
+    plt.ylabel("Rata-rata Penyewaan")
+    st.pyplot(fig4)
 
-# Analisis Pertanyaan 1: Penyewaan tertinggi berdasarkan tanggal
-busiest_day = day_df.loc[day_df['cnt'].idxmax()]
-st.subheader(f"Penyewaan Tertinggi Tanggal: {busiest_day['dteday'].date()} dengan {busiest_day['cnt']} penyewaan")
+elif analysis_type == "Pola Pengguna":
+    st.header("Analisis Pengguna Casual vs Registered")
+    
+    user_pattern = day_df[['weekday', 'casual', 'registered']].groupby('weekday').mean().reset_index()
+    
+    fig5, ax5 = plt.subplots(figsize=(12, 6))
+    sns.lineplot(data=user_pattern, x='weekday', y='casual', marker='o', label='Casual')
+    sns.lineplot(data=user_pattern, x='weekday', y='registered', marker='o', label='Registered')
+    plt.title('Rata-rata Penyewaan: Pengguna Casual vs Registered')
+    plt.xlabel('Hari dalam Seminggu')
+    plt.ylabel('Rata-rata Penyewaan')
+    plt.xticks(ticks=[0, 1, 2, 3, 4, 5, 6], 
+               labels=['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'])
+    st.pyplot(fig5)
 
-# Analisis Pertanyaan 2: Penyewaan berdasarkan cuaca
-st.subheader("Jumlah Penyewaan Berdasarkan Cuaca")
-weather_trend = day_df.groupby('weathersit')['cnt'].mean().reset_index()
-
-plt.figure(figsize=(8, 5))
-sns.barplot(x=weather_trend['weathersit'], y=weather_trend['cnt'], palette='coolwarm')
-plt.title('Rata-rata Penyewaan Berdasarkan Kondisi Cuaca')
-plt.xlabel('Kondisi Cuaca')
-plt.ylabel('Jumlah Penyewaan')
-st.pyplot(plt)
-
-# Analisis Penyewaan Berdasarkan Waktu (Pagi, Siang, Sore, Malam)
-# Analisis Penyewaan Berdasarkan Waktu (Pagi, Siang, Sore, Malam)
-hour_df['hour'] = hour_df['dteday'].dt.hour  # Menggunakan .hour, bukan .hr
-
-# Menampilkan nilai jam yang tersedia
-st.subheader("Nilai Jam yang Tersedia")
-st.write(hour_df['hour'].unique())  # Tampilkan nilai unik dari kolom 'hour'
-
-# Mengkategorikan waktu menggunakan apply
-def categorize_time(hour):
-    if 0 <= hour < 4:
-        return 'Malam'
-    elif 4 <= hour < 10:
-        return 'Pagi'
-    elif 10 <= hour < 14:
-        return 'Siang'
-    elif 14 <= hour < 18:
-        return 'Sore'
-    elif 18 <= hour < 24:
-        return 'Malam'
-
-# Menambahkan kolom time_category
-hour_df['time_category'] = hour_df['hour'].apply(categorize_time)
-
-# Menampilkan kategori waktu
-st.subheader("Kategori Waktu")
-st.write(hour_df[['hour', 'time_category']].head(30))  # Tampilkan beberapa baris untuk memeriksa kategorinya
-
-# Menghitung jumlah penyewaan berdasarkan kategori waktu
-time_trend = hour_df.groupby('time_category')['cnt'].sum().reset_index()
-
-# Menampilkan jumlah penyewaan per kategori waktu
-st.subheader("Jumlah Penyewaan Berdasarkan Waktu")
-st.write(time_trend)  # Tampilkan jumlah penyewaan per kategori waktu
-
-plt.figure(figsize=(8, 5))
-sns.barplot(x='time_category', y='cnt', data=time_trend, palette='viridis')
-plt.title('Jumlah Penyewaan Sepeda Berdasarkan Waktu')
-plt.xlabel('Waktu')
-plt.ylabel('Jumlah Penyewaan')
-st.pyplot(plt)
-
-#Cek apakah setiap kategori waktu memiliki penyewaan
-st.subheader("Jumlah Penyewaan untuk Setiap Kategori Waktu")
-st.write(hour_df['time_category'].value_counts())  # Tampilkan jumlah penyewaan per kategori waktu
-
-# Analisis Pertanyaan 3: Pola pengguna Casual vs Registered
-st.subheader("Pola Penyewaan Casual vs Registered")
-user_pattern = day_df[['weekday', 'casual', 'registered']].groupby('weekday').mean().reset_index()
-
-plt.figure(figsize=(10, 6))
-sns.lineplot(data=user_pattern, x='weekday', y='casual', marker='o', label='Casual')
-sns.lineplot(data=user_pattern, x='weekday', y='registered', marker='o', label='Registered')
-plt.title('Rata-rata Penyewaan Sepeda Casual vs Registered per Hari')
-plt.xlabel('Hari dalam Seminggu')
-plt.ylabel('Rata-rata Jumlah Penyewaan')
-plt.xticks(ticks=[0, 1, 2, 3, 4, 5, 6], labels=['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'])
-plt.legend()
-st.pyplot(plt)
-
-# Kesimpulan
-st.subheader("Kesimpulan:")
-st.write("""
-1. Penyewaan sepeda tertinggi terjadi pada cuaca cerah.
-2. Tren penyewaan tertinggi terjadi di sore hari.
-3. Pengguna casual lebih banyak menyewa pada hari kerja, sedangkan pengguna registered cenderung lebih banyak di akhir pekan.
+# Display key insights
+st.sidebar.markdown("## Insight Utama")
+st.sidebar.markdown("""
+- Penyewaan tertinggi terjadi saat cuaca cerah dan musim gugur
+- Jam puncak penyewaan adalah saat sore hari
+- Suhu memiliki korelasi positif yang kuat dengan jumlah penyewaan
+- Pengguna registered memiliki pola berbeda dibanding pengguna casual
 """)
