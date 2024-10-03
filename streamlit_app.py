@@ -28,7 +28,7 @@ def load_data():
         4: "Hujan Lebat"
     }
     
-    # Tambahkan kolom baru dengan label cuaca dalam bahasa Indonesia
+    # Tambahkan kolom baru dengan label cuaca
     day_df['kondisi_cuaca'] = day_df['weathersit'].map(weather_mapping)
     hour_df['kondisi_cuaca'] = hour_df['weathersit'].map(weather_mapping)
     
