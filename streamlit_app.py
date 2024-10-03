@@ -50,7 +50,11 @@ hour_df['hour'] = hour_df['dteday'].dt.hour  # Menggunakan .hour, bukan .hr
 st.subheader("Nilai Jam yang Tersedia")
 st.write(hour_df['hour'].unique())  # Tampilkan nilai unik dari kolom 'hour'
 
-# Mengkategorikan waktu menggunakan apply
+# Menampilkan statistik dari kolom cnt
+st.subheader("Statistik Penyewaan (cnt)")
+st.write(hour_df['cnt'].describe())  # Tampilkan statistik dari kolom 'cnt'
+
+# Mengkategorikan waktu menggunakan fungsi
 def categorize_time(hour):
     if 0 <= hour < 4:
         return 'Malam'
@@ -60,33 +64,22 @@ def categorize_time(hour):
         return 'Siang'
     elif 14 <= hour < 18:
         return 'Sore'
-    elif 18 <= hour < 24:
+    else:
         return 'Malam'
 
 # Menambahkan kolom time_category
 hour_df['time_category'] = hour_df['hour'].apply(categorize_time)
 
-# Menampilkan kategori waktu
-st.subheader("Kategori Waktu")
-st.write(hour_df[['hour', 'time_category']].head(30))  # Tampilkan beberapa baris untuk memeriksa kategorinya
-
 # Menghitung jumlah penyewaan berdasarkan kategori waktu
 time_trend = hour_df.groupby('time_category')['cnt'].sum().reset_index()
 
-# Menampilkan jumlah penyewaan per kategori waktu
-st.subheader("Jumlah Penyewaan Berdasarkan Waktu")
-st.write(time_trend)  # Tampilkan jumlah penyewaan per kategori waktu
+# Menampilkan total penyewaan per kategori waktu
+st.subheader("Jumlah Penyewaan per Kategori Waktu")
+st.write(time_trend)  # Tampilkan total penyewaan per kategori waktu
 
-plt.figure(figsize=(8, 5))
-sns.barplot(x='time_category', y='cnt', data=time_trend, palette='viridis')
-plt.title('Jumlah Penyewaan Sepeda Berdasarkan Waktu')
-plt.xlabel('Waktu')
-plt.ylabel('Jumlah Penyewaan')
-st.pyplot(plt)
-
-#Cek apakah setiap kategori waktu memiliki penyewaan
-st.subheader("Jumlah Penyewaan untuk Setiap Kategori Waktu")
-st.write(hour_df['time_category'].value_counts())  # Tampilkan jumlah penyewaan per kategori waktu
+# Menampilkan hasil dalam tabel
+st.subheader("Tabel Jumlah Penyewaan per Kategori Waktu")
+st.write(hour_df[['time_category', 'cnt']].head(30))  # Tampilkan beberapa baris untuk memeriksa kategorinya
 
 # Analisis Pertanyaan 3: Pola pengguna Casual vs Registered
 st.subheader("Pola Penyewaan Casual vs Registered")
