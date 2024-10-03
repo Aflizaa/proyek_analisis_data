@@ -142,7 +142,7 @@ elif analysis_type == "Tren Waktu":
     
     with col1:
         # Time category analysis
-        st.subheader("Rata-Rata Penyewaan Berdasarkan Waktu")
+        st.subheader("1. Rata-Rata Penyewaan Berdasarkan Waktu")
         time_trend = hour_df.groupby('time_category').agg({
             'casual': 'mean',
             'registered': 'mean',
@@ -181,7 +181,7 @@ elif analysis_type == "Tren Waktu":
     
     with col2:
         # Hourly trend
-        st.subheader("Pola Penyewaan Per Jam")
+        st.subheader("2. Tren Penyewaan Per Jam")
         hourly_trend = hour_df.groupby('hr').agg({
             'casual': 'mean',
             'registered': 'mean',
