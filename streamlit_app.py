@@ -44,30 +44,14 @@ plt.ylabel('Jumlah Penyewaan')
 st.pyplot(plt)
 
 # Analisis Penyewaan Berdasarkan Waktu (Pagi, Siang, Sore, Malam)
+# Analisis Penyewaan Berdasarkan Waktu (Pagi, Siang, Sore, Malam)
 hour_df['hour'] = hour_df['dteday'].dt.hour  # Menggunakan .hour, bukan .hr
 
-# Menampilkan beberapa baris awal dari dataframe
-st.subheader("Data Awal")
-st.write(hour_df.head(20))  # Tampilkan 20 baris pertama
-
-# Menampilkan nilai unik dari kolom hour
+# Menampilkan nilai jam yang tersedia
 st.subheader("Nilai Jam yang Tersedia")
 st.write(hour_df['hour'].unique())  # Tampilkan nilai unik dari kolom 'hour'
 
-# Menampilkan statistik dari kolom cnt
-st.subheader("Statistik Penyewaan (cnt)")
-st.write(hour_df['cnt'].describe())  # Tampilkan statistik dari kolom 'cnt'
-
-# Menggambarkan jumlah penyewaan per jam untuk melihat distribusi
-plt.figure(figsize=(10, 6))
-sns.barplot(x='hour', y='cnt', data=hour_df, palette='viridis')
-plt.title('Jumlah Penyewaan Sepeda per Jam')
-plt.xlabel('Jam')
-plt.ylabel('Jumlah Penyewaan')
-plt.xticks(rotation=45)
-st.pyplot(plt)
-
-# Mengkategorikan waktu menggunakan fungsi
+# Mengkategorikan waktu menggunakan apply
 def categorize_time(hour):
     if 0 <= hour < 4:
         return 'Malam'
@@ -77,22 +61,34 @@ def categorize_time(hour):
         return 'Siang'
     elif 14 <= hour < 18:
         return 'Sore'
-    else:
+    elif 18 <= hour < 24:
         return 'Malam'
 
 # Menambahkan kolom time_category
 hour_df['time_category'] = hour_df['hour'].apply(categorize_time)
 
+# Menampilkan kategori waktu
+st.subheader("Kategori Waktu")
+st.write(hour_df[['hour', 'time_category']].head(30))  # Tampilkan beberapa baris untuk memeriksa kategorinya
+
 # Menghitung jumlah penyewaan berdasarkan kategori waktu
 time_trend = hour_df.groupby('time_category')['cnt'].sum().reset_index()
 
-# Menampilkan total penyewaan per kategori waktu
-st.subheader("Jumlah Penyewaan per Kategori Waktu")
-st.write(time_trend)  # Tampilkan total penyewaan per kategori waktu
+# Menampilkan jumlah penyewaan per kategori waktu
+st.subheader("Jumlah Penyewaan Berdasarkan Waktu")
+st.write(time_trend)  # Tampilkan jumlah penyewaan per kategori waktu
 
-# Menampilkan hasil dalam tabel
-st.subheader("Tabel Jumlah Penyewaan per Kategori Waktu")
-st.write(hour_df[['time_category', 'cnt']].head(30))  # Tampilkan beberapa baris untuk memeriksa kategorinya
+plt.figure(figsize=(8, 5))
+sns.barplot(x='time_category', y='cnt', data=time_trend, palette='viridis')
+plt.title('Jumlah Penyewaan Sepeda Berdasarkan Waktu')
+plt.xlabel('Waktu')
+plt.ylabel('Jumlah Penyewaan')
+st.pyplot(plt)
+
+#Cek apakah setiap kategori waktu memiliki penyewaan
+st.subheader("Jumlah Penyewaan untuk Setiap Kategori Waktu")
+st.write(hour_df['time_category'].value_counts())  # Tampilkan jumlah penyewaan per kategori waktu
+
 # Analisis Pertanyaan 3: Pola pengguna Casual vs Registered
 st.subheader("Pola Penyewaan Casual vs Registered")
 user_pattern = day_df[['weekday', 'casual', 'registered']].groupby('weekday').mean().reset_index()
