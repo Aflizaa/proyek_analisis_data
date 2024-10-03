@@ -50,9 +50,13 @@ if uploaded_day_file is not None and uploaded_hour_file is not None:
     st.pyplot(plt)
 
     # Analisis Penyewaan Berdasarkan Waktu (Pagi, Siang, Sore, Malam)
+    st.write(hour_df['hour'].describe())  # Untuk memeriksa rentang nilai hour
+if hour_df['hour'].min() < 0 or hour_df['hour'].max() > 23:
+    st.error("Nilai jam di luar rentang 0-23!")
+
     hour_df['hour'] = pd.to_datetime(hour_df['dteday']).dt.hour
-    hour_df['time_category'] = pd.cut(hour_df['hour'], bins=[0, 4, 10, 14, 18, 23],
-                                      labels=['Malam', 'Pagi', 'Siang', 'Sore', 'Malam'], right=False)
+    hour_df['time_category'] = pd.cut(hour_df['hour'], bins=[0, 4, 10, 14, 18, 24],
+                                  labels=['Malam', 'Pagi', 'Siang', 'Sore', 'Malam'], right=False)
     time_trend = hour_df.groupby('time_category')['cnt'].sum().reset_index()
     
     st.subheader("Jumlah Penyewaan Berdasarkan Waktu")
