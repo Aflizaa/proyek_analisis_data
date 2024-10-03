@@ -110,7 +110,7 @@ if analysis_type == "Dampak Cuaca":
         
         plt.bar([i - width for i in x], weather_rentals['casual'], width, label='Casual', color='#C30010')
         plt.bar(x, weather_rentals['registered'], width, label='Registered', color='#F01E2C')
-        plt.bar([i + width for i in x], weather_rentals['cnt'], width, label='Total', color='#F6967')
+        plt.bar([i + width for i in x], weather_rentals['cnt'], width, label='Total', color='#F69697')
         
         plt.xlabel('Kondisi Cuaca')
         plt.ylabel('Rata-rata Jumlah Penyewaan')
@@ -170,7 +170,7 @@ elif analysis_type == "Tren Waktu":
         hourly_trend = hour_df.groupby('hr')['cnt'].mean()
         
         fig4, ax4 = plt.subplots(figsize=(10, 6))
-        hourly_trend.plot(ax=ax4)
+        hourly_trend.plot(ax=ax4, color="#DE0A26")
         
         max_y = hourly_trend.max()
         plt.ylim(0, max_y * 1.1)
