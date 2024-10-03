@@ -78,7 +78,7 @@ if analysis_type == "Dampak Cuaca":
         # Correlation heatmap
         fig_corr, ax_corr = plt.subplots(figsize=(10, 6))
         correlation = day_df[["temp", "atemp", "hum", "windspeed", "weathersit", "cnt"]].corr()
-        sns.heatmap(correlation, annot=True, cmap="coolwarm", fmt=".2f", square=True)
+        sns.heatmap(correlation, annot=True, cmap="Reds", fmt=".2f", square=True)
         ax_corr.set_xticklabels(['Suhu', 'Suhu Terasa', 'Kelembaban', 'Kec. Angin', 'Cuaca', 'Jumlah'], rotation=45)
         ax_corr.set_yticklabels(['Suhu', 'Suhu Terasa', 'Kelembaban', 'Kec. Angin', 'Cuaca', 'Jumlah'], rotation=45)
         st.pyplot(fig_corr)
@@ -108,9 +108,9 @@ if analysis_type == "Dampak Cuaca":
         x = range(len(weather_rentals['kondisi_cuaca']))
         width = 0.25
         
-        plt.bar([i - width for i in x], weather_rentals['casual'], width, label='Casual', color='skyblue')
-        plt.bar(x, weather_rentals['registered'], width, label='Registered', color='orange')
-        plt.bar([i + width for i in x], weather_rentals['cnt'], width, label='Total', color='green')
+        plt.bar([i - width for i in x], weather_rentals['casual'], width, label='Casual', color=''#FFA07A'')
+        plt.bar(x, weather_rentals['registered'], width, label='Registered', color='#FF8C00'')
+        plt.bar([i + width for i in x], weather_rentals['cnt'], width, label='Total', color='#FF4500')
         
         plt.xlabel('Kondisi Cuaca')
         plt.ylabel('Rata-rata Jumlah Penyewaan')
