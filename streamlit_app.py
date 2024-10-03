@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-plt.style.use('seaborn')
 
 # Set page config
 st.set_page_config(
@@ -37,7 +36,11 @@ def load_data():
     return day_df, hour_df
 
 # Load data
-day_df, hour_df = load_data()
+try:
+    day_df, hour_df = load_data()
+except Exception as e:
+    st.error(f"Error loading data: {e}")
+    st.stop()
 
 # Header
 st.title("🚲 Dashboard Analisis Penyewaan Sepeda")
@@ -66,6 +69,7 @@ if analysis_type == "Dampak Cuaca":
         ax.set_xticklabels(['Suhu', 'Suhu Terasa', 'Kelembaban', 'Kec. Angin', 'Cuaca', 'Jumlah'], rotation=45)
         ax.set_yticklabels(['Suhu', 'Suhu Terasa', 'Kelembaban', 'Kec. Angin', 'Cuaca', 'Jumlah'], rotation=45)
         st.pyplot(fig)
+        plt.close()
     
     with col2:
         st.subheader("Pengaruh Suhu Terhadap Penyewaan")
@@ -80,31 +84,38 @@ if analysis_type == "Dampak Cuaca":
         plt.xlabel("Kategori Suhu")
         plt.ylabel("Rata-rata Jumlah Penyewaan")
         st.pyplot(fig2)
+        plt.close()
 
 elif analysis_type == "Tren Waktu":
     st.header("Pola Penyewaan Berdasarkan Waktu")
     
-    # Time category analysis
-    st.subheader("Penyewaan Berdasarkan Waktu Hari")
-    time_trend = hour_df.groupby('time_category')['cnt'].sum()
+    col1, col2 = st.columns(2)
     
-    fig3, ax3 = plt.subplots(figsize=(10, 6))
-    time_trend.plot(kind='bar', ax=ax3)
-    plt.title("Total Penyewaan Berdasarkan Waktu Hari")
-    plt.xlabel("Waktu Hari")
-    plt.ylabel("Total Penyewaan")
-    st.pyplot(fig3)
+    with col1:
+        # Time category analysis
+        st.subheader("Penyewaan Berdasarkan Waktu Hari")
+        time_trend = hour_df.groupby('time_category')['cnt'].sum()
+        
+        fig3, ax3 = plt.subplots(figsize=(10, 6))
+        time_trend.plot(kind='bar', ax=ax3)
+        plt.title("Total Penyewaan Berdasarkan Waktu Hari")
+        plt.xlabel("Waktu Hari")
+        plt.ylabel("Total Penyewaan")
+        st.pyplot(fig3)
+        plt.close()
     
-    # Hourly trend
-    st.subheader("Pola Penyewaan Per Jam")
-    hourly_trend = hour_df.groupby('hr')['cnt'].mean()
-    
-    fig4, ax4 = plt.subplots(figsize=(10, 6))
-    hourly_trend.plot(ax=ax4)
-    plt.title("Rata-rata Penyewaan Per Jam")
-    plt.xlabel("Jam")
-    plt.ylabel("Rata-rata Penyewaan")
-    st.pyplot(fig4)
+    with col2:
+        # Hourly trend
+        st.subheader("Pola Penyewaan Per Jam")
+        hourly_trend = hour_df.groupby('hr')['cnt'].mean()
+        
+        fig4, ax4 = plt.subplots(figsize=(10, 6))
+        hourly_trend.plot(ax=ax4)
+        plt.title("Rata-rata Penyewaan Per Jam")
+        plt.xlabel("Jam")
+        plt.ylabel("Rata-rata Penyewaan")
+        st.pyplot(fig4)
+        plt.close()
 
 elif analysis_type == "Pola Pengguna":
     st.header("Analisis Pengguna Casual vs Registered")
@@ -120,6 +131,7 @@ elif analysis_type == "Pola Pengguna":
     plt.xticks(ticks=[0, 1, 2, 3, 4, 5, 6], 
                labels=['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'])
     st.pyplot(fig5)
+    plt.close()
 
 # Display key insights
 st.sidebar.markdown("## Insight Utama")
