@@ -78,7 +78,7 @@ if analysis_type == "Dampak Cuaca":
         # Correlation heatmap
         fig_corr, ax_corr = plt.subplots(figsize=(10, 6))
         correlation = day_df[["temp", "atemp", "hum", "windspeed", "weathersit", "cnt"]].corr()
-        sns.heatmap(correlation, annot=True, cmap="red", fmt=".2f", square=True)
+        sns.heatmap(correlation, annot=True, cmap="coolwarm", fmt=".2f", square=True)
         ax_corr.set_xticklabels(['Suhu', 'Suhu Terasa', 'Kelembaban', 'Kec. Angin', 'Cuaca', 'Jumlah'], rotation=45)
         ax_corr.set_yticklabels(['Suhu', 'Suhu Terasa', 'Kelembaban', 'Kec. Angin', 'Cuaca', 'Jumlah'], rotation=45)
         st.pyplot(fig_corr)
