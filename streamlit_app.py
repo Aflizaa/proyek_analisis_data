@@ -71,12 +71,11 @@ st.subheader("Kategori Waktu")
 st.write(hour_df[['hour', 'time_category']].head(30))  # Tampilkan beberapa baris untuk memeriksa kategorinya
 
 # Menghitung jumlah penyewaan berdasarkan kategori waktu
-st.subheader("Jumlah Penyewaan Berdasarkan Waktu")
 time_trend = hour_df.groupby('time_category')['cnt'].sum().reset_index()
 
 # Menampilkan jumlah penyewaan per kategori waktu
 st.subheader("Jumlah Penyewaan Berdasarkan Waktu")
-st.write(hour_df['time_category'].value_counts())  # Tampilkan jumlah penyewaan per kategori waktu
+st.write(time_trend)  # Tampilkan jumlah penyewaan per kategori waktu
 
 plt.figure(figsize=(8, 5))
 sns.barplot(x='time_category', y='cnt', data=time_trend, palette='viridis')
