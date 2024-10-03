@@ -87,9 +87,8 @@ if analysis_type == "Dampak Cuaca":
     with col2:
         st.write("""
         **Insight Korelasi:**
-        - Suhu memiliki korelasi positif kuat dengan jumlah penyewaan
-        - Kelembaban memiliki korelasi negatif dengan penyewaan
-        - Kecepatan angin memiliki pengaruh minimal
+        - Suhu memiliki korelasi positif yang cukup kuat dengan jumlah penyewaan.
+        - Kelembaban dan kecepatan angin memiliki korelasi negatif dengan penyewaan dengan pengaruh yang minimal.
         """)
     # Subheader untuk analisis kondisi cuaca
     st.subheader("2. Dampak Kondisi Cuaca Terhadap Penyewaan")
@@ -124,10 +123,10 @@ if analysis_type == "Dampak Cuaca":
     with col4:
         st.write("""
         **Insight Kondisi Cuaca:**
-        - Penyewaan tertinggi terjadi saat cuaca cerah
-        - Cuaca berawan mengurangi penyewaan sekitar 20%
-        - Hujan ringan menurunkan penyewaan hingga 50%
-        - Pengguna registered lebih konsisten di berbagai cuaca
+        - Penyewaan tertinggi terjadi saat cuaca cerah.
+        - Cuaca berawan mengurangi penyewaan sekitar 20%.
+        - Hujan ringan menurunkan penyewaan hingga 50%.
+        - Pengguna registered selalu lebih banyak  dibanding pengguna casualdi berbagai cuaca.
         """)
         
         # Tabel ringkasan
@@ -190,8 +189,8 @@ elif analysis_type == "Tren Waktu":
         }).round(0)
         
         fig4, ax4 = plt.subplots(figsize=(10, 6))
-        ax4.plot(hourly_trend.index, hourly_trend['casual'], label='Casual', color='#6C030D')
-        ax4.plot(hourly_trend.index, hourly_trend['registered'], label='Registered', color='#9D0106')
+        ax4.plot(hourly_trend.index, hourly_trend['casual'], label='Casual', color='#9D0106')
+        ax4.plot(hourly_trend.index, hourly_trend['registered'], label='Registered', color='#E85D04')
         ax4.plot(hourly_trend.index, hourly_trend['cnt'], label='Total', color='#D00000')
         
         plt.title("Rata-rata Penyewaan Per Jam")
@@ -209,8 +208,8 @@ elif analysis_type == "Pola Pengguna":
     user_pattern = day_df[['weekday', 'casual', 'registered']].groupby('weekday').mean().reset_index()
     
     fig5, ax5 = plt.subplots(figsize=(12, 6))
-    sns.lineplot(data=user_pattern, x='weekday', y='casual', marker='o', label='Casual', color = "D00000")
-    sns.lineplot(data=user_pattern, x='weekday', y='registered', marker='o', label='Registered', color ="E85D04" )
+    sns.lineplot(data=user_pattern, x='weekday', y='casual', marker='o', label='Casual', color='#9D0106')
+    sns.lineplot(data=user_pattern, x='weekday', y='registered', marker='o', label='Registered', color='#E85D04' )
     plt.title('Rata-rata Penyewaan: Pengguna Casual vs Registered')
     plt.xlabel('Hari dalam Seminggu')
     plt.ylabel('Rata-rata Penyewaan')
@@ -222,8 +221,8 @@ elif analysis_type == "Pola Pengguna":
 # Display key insights
 st.sidebar.markdown("## Insight Utama")
 st.sidebar.markdown("""
-- Penyewaan tertinggi terjadi saat cuaca cerah dan musim gugur
-- Jam puncak penyewaan adalah saat sore hari
-- Suhu memiliki korelasi positif yang kuat dengan jumlah penyewaan
-- Pengguna registered memiliki pola berbeda dibanding pengguna casual
+- Penyewaan tertinggi terjadi saat cuaca cerah dan musim gugur.
+- Penyewaan terbanyak terjadi pada saat sore hari.
+- Suhu memiliki korelasi positif yang kuat dengan jumlah penyewaan.
+- Pengguna registered memiliki pola berbeda dibanding pengguna casual.
 """)
