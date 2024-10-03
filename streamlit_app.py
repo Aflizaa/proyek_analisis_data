@@ -109,4 +109,3 @@ st.write("""
 2. Tren penyewaan tertinggi terjadi di sore hari.
 3. Pengguna casual lebih banyak menyewa pada hari kerja, sedangkan pengguna registered cenderung lebih banyak di akhir pekan.
 """)
-.py
